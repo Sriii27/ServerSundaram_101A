@@ -17,6 +17,6 @@ urlpatterns = [
 
     path("v1/employees/<int:id>/breakdown", employee_breakdown),
 
-    path("v1/metrics/distribution", metrics_distribution),
-    path("v1/metrics/weights", metrics_weights),
+    path("v1/metrics/weights",metrics_weights),
+    path("v1/metrics/distribution", metrics_distribution)
 ]

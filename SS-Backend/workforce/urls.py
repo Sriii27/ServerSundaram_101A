@@ -19,6 +19,8 @@ urlpatterns = [
 
     path("v1/metrics/weights",metrics_weights),
     path("v1/metrics/distribution", metrics_distribution),
+    path("v1/metrics/weights", metrics_weights),
+    path("v1/seed", seed_data_atomic),
     path("ai/employee-summary/<int:employee_id>/",employee_ai_summary,name="employee_ai_summary"
     ),
 ]

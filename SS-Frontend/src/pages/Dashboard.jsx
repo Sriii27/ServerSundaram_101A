@@ -3,9 +3,8 @@ import { api } from '../services/api';
 import { KpiCard } from '../components/KpiCard';
 import { TeamSelector } from '../components/TeamSelector';
 import { ImpactActivityScatter } from '../components/ImpactActivityScatter';
-import { Activity, Zap, Users, Star, ArrowUpRight, Loader2, Info } from 'lucide-react';
+import { Activity, Zap, Users, Star, ArrowUpRight, Loader2 } from 'lucide-react';
 import { SilentArchitectBadge } from '../components/SilentArchitectBadge';
-import { Link } from 'react-router-dom';
 import { EmployeeDrawer } from '../components/EmployeeDrawer';
 
 export default function Dashboard() {
@@ -51,10 +50,10 @@ export default function Dashboard() {
   // Loading State UI
   if (loading && !dashboardData) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
+      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
         <div className="text-center space-y-4">
-          <Loader2 className="w-10 h-10 text-emerald-500 animate-spin mx-auto" />
-          <p className="text-slate-400 font-medium">Loading ecosystem data...</p>
+          <Loader2 className="w-10 h-10 text-sky-500 animate-spin mx-auto" />
+          <p className="text-slate-400 font-medium animate-pulse">Synchronizing ecosystem data...</p>
         </div>
       </div>
     );
@@ -63,8 +62,8 @@ export default function Dashboard() {
   // Error State UI
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-center space-y-4 max-w-md p-6 bg-slate-900 rounded-xl border border-red-900/50">
+      <div className="min-h-screen bg-[#0F172A] flex items-center justify-center">
+        <div className="text-center space-y-4 max-w-md p-6 bg-[#1E293B] rounded-xl border border-red-900/50">
           <p className="text-red-400 font-medium">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -82,158 +81,170 @@ export default function Dashboard() {
   const isAllTeams = selectedTeam === 'All Teams';
 
   return (
-    <div className="min-h-screen bg-slate-950 p-8 text-slate-50 font-sans">
+    <div className="animate-in fade-in duration-500 pb-10">
       <EmployeeDrawer
         isOpen={!!selectedEmployee}
         onClose={() => setSelectedEmployee(null)}
         employee={selectedEmployee}
       />
 
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="space-y-8">
 
-        {/* Header Section */}
+        {/* Dashboard Toolbar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
-              Team Contribution Overview
-            </h1>
-            <div className="flex items-center gap-4 text-slate-400">
-              <p>Employee comparisons are shown within teams to ensure fair evaluation.</p>
-              <span className="text-slate-700">|</span>
-              <Link to="/metrics" className="flex items-center gap-1.5 text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium">
-                <Info className="w-4 h-4" /> Methodology & Metrics
-              </Link>
-            </div>
+            <h2 className="text-2xl font-bold text-white tracking-tight">Executive Overview</h2>
+            <p className="text-slate-400 text-sm">Real-time workforce performance metrics.</p>
           </div>
-          <div className="flex flex-col items-end gap-2">
+
+          <div className="flex items-center gap-3 bg-[#1E293B] p-1 rounded-lg border border-slate-700">
             <TeamSelector
               teams={teams}
               selectedTeam={selectedTeam}
               onSelect={setSelectedTeam}
             />
-            <span className="text-xs text-slate-500 font-medium tracking-wide uppercase">
-              Viewing: <span className="text-white">{selectedTeam} {isAllTeams && '(Aggregated)'}</span>
-            </span>
           </div>
         </div>
 
         {/* KPI Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <KpiCard
             title="Avg Impact Score"
             value={kpis.avgImpact}
             icon={Zap}
-            trend={isAllTeams ? "Org Avg" : "Team Avg"}
-            className="border-emerald-500/20"
+            trend={isAllTeams ? "Organization Average" : `Team Avg (Org: ${orgStats.avgImpact})`}
+            className="border-emerald-500/20 bg-[#1E293B] hover:border-emerald-500/30"
           />
           <KpiCard
             title="Avg Activity Score"
             value={kpis.avgActivity}
             icon={Activity}
-            className="border-blue-500/20"
+            className="border-sky-500/20 bg-[#1E293B] hover:border-sky-500/30"
           />
           <KpiCard
             title="Silent Architects"
             value={kpis.silentCount}
             icon={Star}
-            className="border-amber-500/20 bg-amber-500/5"
+            className="border-amber-500/20 bg-[#1E293B] hover:border-amber-500/30"
           />
           <KpiCard
-            title="Total Employees"
+            title="Total Contributors"
             value={kpis.total}
             icon={Users}
-            className="border-slate-800"
+            className="border-slate-700 bg-[#1E293B]"
           />
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
           {/* Chart Section (span 2 cols) */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-6">
             <ImpactActivityScatter
               data={filteredEmployees}
               selectedTeam={selectedTeam}
               onNodeClick={setSelectedEmployee}
             />
 
-            <div className="bg-slate-900 border border-slate-800 rounded-xl p-6">
-              <h3 className="font-semibold text-white mb-2 flex items-center gap-2">
-                <Star className="w-4 h-4 text-amber-500" />
-                Insight
+            <div className="bg-[#1E293B] border border-slate-700 rounded-xl p-8 relative overflow-hidden shadow-sm">
+              <div className="absolute top-0 right-0 p-4 opacity-5">
+                <Star className="w-24 h-24 text-amber-500 rotate-12" />
+              </div>
+              <h3 className="font-bold text-white mb-3 flex items-center gap-2 relative z-10 text-lg">
+                <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+                Contextual Insight
               </h3>
-              <div className="space-y-4">
-                <p className="text-slate-300">
-                  <strong className="text-white">{kpis.silentCount} contributors</strong> in this view are
-                  <span className="text-amber-500 font-medium"> Silent Architects</span> (High Impact, Low Activity).
-                  Ensure their contributions are recognized despite lower visibility.
+              <div className="space-y-4 relative z-10 text-slate-300 leading-relaxed text-base">
+                <p>
+                  <strong className="text-white">{kpis.silentCount} contributors</strong> in this view are identified as
+                  <span className="text-amber-400 font-bold"> Silent Architects</span>.
+                  These individuals drive high business value through architectural decisions, mentorship, or critical fixes, despite lower visible activity output.
                 </p>
                 {!isAllTeams && (
-                  <div className="pt-3 border-t border-slate-800">
-                    <p className="text-slate-400 text-sm">
-                      <span className="text-emerald-400 font-medium">{selectedTeam}</span> avg impact ({kpis.avgImpact}) is
-                      <strong className={kpis.avgImpact >= orgStats.avgImpact ? "text-emerald-400" : "text-amber-400"}>
-                        {kpis.avgImpact >= orgStats.avgImpact ? " higher " : " lower "}
-                      </strong>
-                      than the Organization average ({orgStats.avgImpact}).
-                    </p>
-                  </div>
+                  <p className="border-t border-slate-700 pt-4 mt-2 text-slate-400">
+                    The <span className="text-sky-400 font-medium">{selectedTeam}</span> team's average impact ({kpis.avgImpact}) is
+                    <strong className={kpis.avgImpact >= orgStats.avgImpact ? "text-sky-400" : "text-amber-400"}>
+                      {kpis.avgImpact >= orgStats.avgImpact ? " higher " : " lower "}
+                    </strong>
+                    than the Organization average ({orgStats.avgImpact}).
+                  </p>
                 )}
               </div>
             </div>
           </div>
 
           {/* Side Panel: Top Contributors List */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-full">
-            <div className="p-4 border-b border-slate-800 flex justify-between items-center">
-              <h3 className="font-semibold text-white">Top Impact Contributors</h3>
-              {!isAllTeams && <span className="text-xs text-slate-500 uppercase">{selectedTeam}</span>}
+          <div className="bg-[#1E293B] border border-slate-700 rounded-xl overflow-hidden flex flex-col h-[650px] shadow-sm">
+            <div className="p-6 border-b border-slate-700 bg-[#1E293B] flex justify-between items-center sticky top-0 z-10">
+              <div>
+                <h3 className="font-bold text-white text-lg tracking-tight">Top Contributors</h3>
+                <p className="text-xs text-slate-400 mt-1 font-medium">Ranked by Impact Score</p>
+              </div>
+              {!isAllTeams && <span className="px-2.5 py-1 bg-slate-700 rounded text-[10px] text-sky-400 font-bold uppercase tracking-wider border border-slate-600">{selectedTeam}</span>}
             </div>
 
             {isAllTeams ? (
-              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400">
-                <Users className="w-12 h-12 mb-3 text-slate-700" />
-                <p className="text-sm">Select a specific team to view individual rankings.</p>
-                <p className="text-xs mt-2 text-slate-600">Cross-team individual comparison is disabled.</p>
+              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center text-slate-400 bg-[#1E293B]">
+                <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center mb-4 text-slate-600">
+                  <Users className="w-8 h-8" />
+                </div>
+                <p className="text-sm font-medium text-slate-300">Select a specific team</p>
+                <p className="text-xs mt-1 text-slate-500 max-w-[200px] mx-auto leading-relaxed">
+                  Individual rankings are hidden at the organization level to prevent unfair cross-functional comparisons.
+                </p>
               </div>
             ) : (
               <>
-                <div className="overflow-y-auto flex-1 p-2">
-                  <table className="w-full text-sm text-left">
-                    <thead className="text-xs text-slate-500 uppercase bg-slate-900/50">
+                <div className="overflow-y-auto flex-1 p-0 scrollbar-thin scrollbar-thumb-slate-700">
+                  <table className="w-full text-sm text-left border-collapse">
+                    <thead className="bg-slate-800 text-slate-400 text-xs uppercase font-semibold">
                       <tr>
-                        <th className="px-3 py-2">Name</th>
-                        <th className="px-3 py-2 text-right">Impact</th>
+                        <th className="px-6 py-3 font-medium">Employee</th>
+                        <th className="px-6 py-3 text-right font-medium">Impact</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-800">
+                    <tbody className="align-middle">
                       {[...filteredEmployees]
                         .sort((a, b) => b.impactScore - a.impactScore)
-                        .slice(0, 5)
-                        .map(emp => (
+                        .slice(0, 8)
+                        .map((emp, idx) => (
                           <tr
                             key={emp.id}
-                            className="hover:bg-slate-800/50 transition-colors cursor-pointer"
+                            className="group even:bg-slate-800/40 hover:bg-slate-700/50 transition-colors cursor-pointer border-b border-slate-800/50 last:border-0"
                             onClick={() => setSelectedEmployee(emp)}
                           >
-                            <td className="px-3 py-3">
-                              <div className="font-medium text-white">{emp.name}</div>
-                              <div className="text-xs text-slate-500 flex items-center gap-2">
-                                {emp.role}
-                                {emp.silentArchitect && <SilentArchitectBadge className="scale-75 origin-left px-1.5 py-0" />}
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <span className="text-xs font-mono text-slate-500 font-bold w-4 text-center">{idx + 1}</span>
+                                <div>
+                                  <div className="font-bold text-white group-hover:text-sky-400 transition-colors">{emp.name}</div>
+                                  <div className="text-[11px] text-slate-500 flex items-center gap-2">
+                                    {emp.role}
+                                  </div>
+                                </div>
                               </div>
                             </td>
-                            <td className="px-3 py-3 text-right font-mono font-medium text-emerald-400">
-                              {emp.impactScore}
+                            <td className="px-6 py-4 text-right">
+                              <div className="flex flex-col items-end gap-1">
+                                <div className="font-mono font-bold text-sky-400 text-lg leading-none">{emp.impactScore}</div>
+                                {emp.silentArchitect && <SilentArchitectBadge className="scale-75 origin-right" />}
+                              </div>
                             </td>
                           </tr>
                         ))}
                     </tbody>
                   </table>
+
+                  {filteredEmployees.length > 8 && (
+                    <div className="text-center py-4 text-xs text-slate-500 italic">
+                      + {filteredEmployees.length - 8} more contributors
+                    </div>
+                  )}
                 </div>
-                <div className="p-4 border-t border-slate-800 bg-slate-900/50 text-center">
-                  <button className="text-sm text-blue-400 hover:text-blue-300 font-medium inline-flex items-center gap-1 transition-colors">
-                    Full Team Report <ArrowUpRight className="w-3 h-3" />
+
+                <div className="p-4 border-t border-slate-700 bg-[#1E293B] text-center">
+                  <button className="text-xs text-slate-400 hover:text-white font-medium inline-flex items-center gap-1.5 transition-colors uppercase tracking-wider group">
+                    View Full Report <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                   </button>
                 </div>
               </>

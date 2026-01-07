@@ -234,15 +234,44 @@ def dashboard_scatter(request):
     if team_name:
         scores = scores.filter(employee__team__team_name=team_name)
 
-    data = [{
-        "id": s.employee.pk,
-        "name": s.employee.name,
-        "role": s.employee.role,
-        "team": s.employee.team.team_name,
-        "impactScore": s.impact_score,
-        "activityScore": s.activity_score,
-        "silentArchitect": s.silent_architect
-    } for s in scores]
+    data = []
+    for s in scores:
+        # Calculate Breakdown Stats
+        review_count = Activity.objects.filter(employee=s.employee, activity_type="Code Review").aggregate(s=models.Sum("count"))["s"] or 0
+        bug_count = Contribution.objects.filter(employee=s.employee, contribution_type="Bug Fix").count()
+        arch_count = Contribution.objects.filter(employee=s.employee, contribution_type="Architecture").count()
+
+        breakdown = [
+            {
+                "metric": "Code Reviews",
+                "score": min(100, s.activity_score + 10),
+                "description": f"Reviewed {review_count} pull requests with deep technical feedback.",
+                "stats": {"count": review_count, "label": "PRs Reviewed"}
+            },
+            {
+                "metric": "Bug Fixes",
+                "score": min(100, s.impact_score - 5),
+                "description": f"Resolved {bug_count} critical/major issues affecting stability.",
+                "stats": {"count": bug_count, "label": "Bugs Fixed"}
+            },
+            {
+                "metric": "Architecture",
+                "score": s.impact_score,
+                "description": f"Led {arch_count} system design initiatives.",
+                "stats": {"count": arch_count, "label": "Design Docs"}
+            }
+        ]
+
+        data.append({
+            "id": s.employee.pk,
+            "name": s.employee.name,
+            "role": s.employee.role,
+            "team": s.employee.team.team_name,
+            "impactScore": s.impact_score,
+            "activityScore": s.activity_score,
+            "silentArchitect": s.silent_architect,
+            "impactBreakdown": breakdown  # ✅ Added comprehensive breakdown
+        })
 
     return Response(data, status=status.HTTP_200_OK)
 
@@ -285,21 +314,29 @@ def employee_breakdown(request, id):
     except ImpactScore.DoesNotExist:
         return Response({"error": "Score not found"}, status=404)
 
+    # Fetch real counts for details
+    review_count = Activity.objects.filter(employee=emp, activity_type="Code Review").aggregate(s=models.Sum("count"))["s"] or 0
+    bug_count = Contribution.objects.filter(employee=emp, contribution_type="Bug Fix").count()
+    arch_count = Contribution.objects.filter(employee=emp, contribution_type="Architecture").count()
+    
     breakdown = [
         {
             "metric": "Code Reviews",
             "score": min(100, score.activity_score + 10),
-            "description": "Consistently reviews complex PRs and improves overall code quality."
+            "description": f"Reviewed {review_count} pull requests with deep technical feedback.",
+            "stats": {"count": review_count, "label": "PRs Reviewed"}
         },
         {
             "metric": "Bug Fixes",
             "score": min(100, score.impact_score - 5),
-            "description": "Resolved high-severity issues affecting system stability."
+            "description": f"Resolved {bug_count} critical/major issues affecting stability.",
+            "stats": {"count": bug_count, "label": "Bugs Fixed"}
         },
         {
             "metric": "Architecture",
             "score": score.impact_score,
-            "description": "Delivered high-impact architectural or optimization work."
+            "description": f"Led {arch_count} system design initiatives.",
+            "stats": {"count": arch_count, "label": "Design Docs"}
         }
     ]
 

@@ -4,8 +4,50 @@
   html {
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    background-color: #0f172a; /* Slate 950 */
-    color: #f8fafc; /* Slate 50 */
+    background-color: #0f172a;
+    /* Slate 900 Background */
+    color: #e5e7eb;
+    /* Gray 200 Text */
+    min-height: 100%;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f172a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    /* Slate 700 */
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+    /* Slate 600 */
+  }
+}
+
+@layer utilities {
+  .text-primary-sky {
+    @apply text-sky-400;
+  }
+
+  .text-accent-purple {
+    @apply text-violet-400;
+  }
+
+  .bg-surface {
+    @apply bg-slate-800;
+  }
+
+  .border-surface-highlight {
+    @apply border-slate-700;
   }
 }
 

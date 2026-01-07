@@ -8,7 +8,7 @@ export function TeamSelector({ teams, selectedTeam, onSelect }) {
         <select
           value={selectedTeam}
           onChange={(e) => onSelect(e.target.value)}
-          className="appearance-none w-full bg-slate-900 border border-slate-700 hover:border-slate-500 text-white py-2 pl-4 pr-10 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors cursor-pointer"
+          className="appearance-none w-full bg-slate-900/50 backdrop-blur border border-white/10 hover:border-white/20 text-white py-2 pl-4 pr-10 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50 transition-colors cursor-pointer"
         >
           {teams.map((team) => (
             <option key={team} value={team} className="bg-slate-900 text-white">

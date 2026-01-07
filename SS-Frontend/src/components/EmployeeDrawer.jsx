@@ -21,28 +21,28 @@ export function EmployeeDrawer({ isOpen, onClose, employee }) {
             />
 
             {/* Drawer */}
-            <div className="relative w-full max-w-lg bg-[#1E293B] border-l border-slate-700 shadow-2xl h-full flex flex-col animate-in slide-in-from-right duration-500 sm:duration-300 ease-out">
+            <div className="relative w-full max-w-lg bg-[#09090B] border-l border-zinc-800 shadow-2xl h-full flex flex-col animate-in slide-in-from-right duration-500 sm:duration-300 ease-out">
 
                 {/* Header */}
-                <div className="p-6 border-b border-slate-700 flex justify-between items-start bg-[#1E293B] z-10 shrink-0">
+                <div className="p-6 border-b border-zinc-800 flex justify-between items-start bg-[#09090B] z-10 shrink-0">
                     <div>
                         <h2 className="text-2xl font-bold text-white tracking-tight">{employee.name}</h2>
-                        <div className="flex items-center gap-3 text-slate-400 mt-1.5 text-sm">
-                            <span className="font-medium text-slate-300">{employee.role}</span>
-                            <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+                        <div className="flex items-center gap-3 text-zinc-400 mt-1.5 text-sm">
+                            <span className="font-medium text-zinc-300">{employee.role}</span>
+                            <span className="w-1 h-1 rounded-full bg-zinc-600"></span>
                             <span>{employee.team}</span>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white transition-colors"
+                        className="p-2 hover:bg-zinc-800 rounded-lg text-zinc-400 hover:text-white transition-colors"
                     >
                         <X className="w-6 h-6" />
                     </button>
                 </div>
 
                 {/* Scrollable Content */}
-                <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-thin scrollbar-thumb-slate-700 scrollbar-track-transparent">
+                <div className="flex-1 overflow-y-auto p-6 space-y-8 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
 
                     {/* Main Stats Row */}
                     <div className="grid grid-cols-2 gap-4">
@@ -63,12 +63,12 @@ export function EmployeeDrawer({ isOpen, onClose, employee }) {
                     </div>
 
                     {/* Quick Insight */}
-                    <div className="bg-gradient-to-r from-slate-800 to-slate-900 rounded-xl p-5 border border-slate-700/50 shadow-sm relative overflow-hidden">
+                    <div className="bg-gradient-to-r from-zinc-900 to-black rounded-xl p-5 border border-zinc-800 shadow-sm relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl -mr-10 -mt-10 pointer-events-none"></div>
                         <h3 className="text-sm font-bold text-white mb-2 flex items-center gap-2 relative z-10">
                             <Star className="w-4 h-4 text-amber-500 fill-amber-500" /> AI Insight
                         </h3>
-                        <p className="text-slate-300 text-sm italic leading-relaxed relative z-10">
+                        <p className="text-zinc-300 text-sm italic leading-relaxed relative z-10">
                             "{employee.name}'s primary impact driver is <strong className="text-white font-medium">{topContribution?.metric}</strong>.
                             {employee.silentArchitect
                                 ? " Their high-value output despite lower visibility classifies them as a Silent Architect."

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import employee_ai_summary, seed_data_atomic
+from .views import seed_data_atomic, login_view # employee_ai_summary,
 from .views import get_teams
 from .views import get_thresholds
 from .views import dashboard_summary, dashboard_scatter, dashboard_leaderboard
@@ -21,6 +21,6 @@ urlpatterns = [
     path("v1/metrics/distribution", metrics_distribution),
     path("v1/metrics/weights", metrics_weights),
     path("v1/seed", seed_data_atomic),
-    path("ai/employee-summary/<int:employee_id>/",employee_ai_summary,name="employee_ai_summary"
-    ),
+    # path("ai/employee-summary/<int:employee_id>/",employee_ai_summary,name="employee_ai_summary"),
+    path("v1/auth/login/", login_view),
 ]

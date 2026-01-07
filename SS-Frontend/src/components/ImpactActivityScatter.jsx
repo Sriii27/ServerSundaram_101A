@@ -14,15 +14,15 @@ const CustomTooltip = ({ active, payload }) => {
     }, {});
 
     return (
-      <div className="bg-[#1E293B] border border-slate-700 p-4 rounded-xl shadow-xl min-w-[220px] z-50">
+      <div className="bg-[#09090B] border border-zinc-800 p-4 rounded-xl shadow-xl min-w-[220px] z-50">
         <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
           <span className="font-bold text-white text-base tracking-tight">{data.name}</span>
           {data.silentArchitect && <SilentArchitectBadge className="scale-75 origin-left" />}
         </div>
-        <p className="text-slate-400 text-xs font-medium mb-3 flex items-center gap-2">
+        <p className="text-zinc-400 text-xs font-medium mb-3 flex items-center gap-2">
           <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/5">{data.role}</span>
-          <span className="w-1 h-1 rounded-full bg-slate-600"></span>
-          <span className="text-slate-300">{data.team}</span>
+          <span className="w-1 h-1 rounded-full bg-zinc-600"></span>
+          <span className="text-zinc-300">{data.team}</span>
         </p>
 
         <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
@@ -81,25 +81,25 @@ export function ImpactActivityScatter({ data, selectedTeam, onNodeClick }) {
   };
 
   return (
-    <div className="h-[500px] w-full bg-[#1E293B] border border-slate-700 rounded-3xl p-6 shadow-sm relative">
+    <div className="h-[500px] w-full bg-[#09090B] border border-zinc-800 rounded-3xl p-6 shadow-sm relative">
       <div className="flex justify-between items-center mb-4 px-2">
         <h3 className="text-lg font-semibold text-white">Impact vs. Activity Distribution</h3>
         <div className="flex gap-4 text-xs">
           <div className="flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-full bg-amber-500 border border-amber-300"></span>
-            <span className="text-slate-300 font-medium">Silent Architect</span>
+            <span className="text-zinc-300 font-medium">Silent Architect</span>
           </div>
           {isAllTeams ? (
             Object.entries(TEAM_COLORS).filter(([k]) => k !== 'Default').map(([team, color]) => (
               <div key={team} className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }}></span>
-                <span className="text-slate-400">{team}</span>
+                <span className="text-zinc-400">{team}</span>
               </div>
             ))
           ) : (
             <div className="flex items-center gap-1.5">
               <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-              <span className="text-slate-400">Contributor</span>
+              <span className="text-zinc-400">Contributor</span>
             </div>
           )}
         </div>

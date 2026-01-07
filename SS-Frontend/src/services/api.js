@@ -196,5 +196,68 @@ export const api = {
             console.error("API Error (getWeights):", error);
             return [];
         }
+    },
+
+    /**
+     * Generate AI Performance Summary
+     */
+    async generateSummary(employeeId) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/ai/employee-summary/${employeeId}/`, {
+                method: 'POST',
+            });
+            if (!response.ok) throw new Error('Failed to generate summary');
+            return await response.json();
+        } catch (error) {
+            console.error("API Error (generateSummary):", error);
+            throw error;
+        }
+    },
+
+    // --- Metrics & Dashboard ---
+    getDashboardSummary: async (team) => {
+        const query = team && team !== 'All Teams' ? `?team=${encodeURIComponent(team)}` : '';
+        const res = await fetch(`${API_BASE_URL}/dashboard/summary${query}`);
+        if (!res.ok) throw new Error('Failed to fetch dashboard summary');
+        return res.json();
+    },
+
+    getDashboardScatter: async (team) => {
+        const query = team && team !== 'All Teams' ? `?team=${encodeURIComponent(team)}` : '';
+        const res = await fetch(`${API_BASE_URL}/dashboard/scatter${query}`);
+        if (!res.ok) throw new Error('Failed to fetch scatter data');
+        return res.json();
+    },
+
+    getMetricConfig: async () => {
+        const res = await fetch(`${API_BASE_URL}/config/metrics`);
+        if (!res.ok) throw new Error('Failed to fetch metric config');
+        return res.json();
+    },
+
+    // --- Raw Data Endpoints for Frontend-Driven Metrics ---
+
+    async getRawEmployees() {
+        const res = await fetch(`${API_BASE_URL}/employees/raw`);
+        if (!res.ok) throw new Error('Failed to fetch raw employees');
+        return await res.json();
+    },
+
+    async getRawContributions() {
+        const res = await fetch(`${API_BASE_URL}/contributions/raw`);
+        if (!res.ok) throw new Error('Failed to fetch raw contributions');
+        return await res.json();
+    },
+
+    async getRawActivities() {
+        const res = await fetch(`${API_BASE_URL}/activities/raw`);
+        if (!res.ok) throw new Error('Failed to fetch raw activities');
+        return await res.json();
+    },
+
+    async getRawIssues() {
+        const res = await fetch(`${API_BASE_URL}/issues/raw`);
+        if (!res.ok) throw new Error('Failed to fetch raw issues');
+        return await res.json();
     }
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Activity, Settings, Search, Bell, Menu, X } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, Settings, Search, Bell, Menu, X, LogOut, Scale } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export function DashboardLayout({ children }) {
@@ -10,6 +10,7 @@ export function DashboardLayout({ children }) {
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
         { icon: Users, label: 'Contributors', path: '/contributors' },
         { icon: Activity, label: 'Activity', path: '/activity' },
+        { icon: Scale, label: 'Metrics', path: '/metrics' },
         { icon: Settings, label: 'Settings', path: '/settings' },
     ];
 
@@ -90,14 +91,14 @@ export function DashboardLayout({ children }) {
                             <Menu className="w-5 h-5" />
                         </button>
 
-                        <div className="hidden md:flex items-center relative">
+                        {/* <div className="hidden md:flex items-center relative">
                             <Search className="w-4 h-4 absolute left-3 text-zinc-500" />
                             <input
                                 type="text"
                                 placeholder="Search employees, teams..."
                                 className="bg-zinc-900 border border-zinc-700 text-zinc-200 text-sm rounded-lg pl-9 pr-4 py-2 w-64 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all placeholder:text-zinc-600"
                             />
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -105,6 +106,10 @@ export function DashboardLayout({ children }) {
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-sky-500 border-2 border-[#09090B]"></span>
                         </button>
+
+                        <Link to="/login" className="p-2 text-zinc-400 hover:text-sky-400 hover:bg-zinc-800 rounded-lg transition-colors" title="Sign Out">
+                            <LogOut className="w-5 h-5" />
+                        </Link>
                     </div>
                 </header>
 

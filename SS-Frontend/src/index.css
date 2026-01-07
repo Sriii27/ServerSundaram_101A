@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    background-color: #0f172a; /* Slate 950 */
+    color: #f8fafc; /* Slate 50 */
+  }
+}
+
+@theme {
+  --color-brand-primary: #3b82f6;
+  --color-brand-secondary: #64748b;
+  --color-brand-accent: #f43f5e;
+}

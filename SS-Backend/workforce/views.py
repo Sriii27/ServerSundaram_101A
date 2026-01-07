@@ -11,8 +11,8 @@ from rest_framework.response import Response
 from rest_framework import status
 
 from .models import Team, Employee, ImpactScore
-
-
+from workforce.services.ai import employee_prompt, generate_ai_summary
+from workforce.services.employee_analytics import get_employee_facts
 
 from .models import (
     Team, Employee, Activity, PullRequest,
@@ -386,3 +386,22 @@ def metrics_weights(request):
         },
         status=status.HTTP_200_OK
     )
+
+
+@api_view(["POST"])
+def employee_ai_summary(request, employee_id):
+    try:
+        facts = get_employee_facts(employee_id)
+    except Employee.DoesNotExist:
+        return Response(
+            {"error": "Employee not found"},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    prompt = employee_prompt(facts)
+    summary = generate_ai_summary(prompt)
+
+    return Response({
+        "employee": facts["name"],
+        "ai_summary": summary
+    }, status=status.HTTP_200_OK)

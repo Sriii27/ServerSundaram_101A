@@ -5,7 +5,7 @@ import { cn } from '../lib/utils';
 export function KpiCard({ title, value, icon: Icon, trend, className }) {
   return (
     <div className={cn(
-      "bg-slate-900/40 backdrop-blur-sm border border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-[0_0_30px_rgba(255,255,255,0.05)] transition-all duration-300 group hover:border-white/20 hover:translate-y-[-2px]",
+      "bg-[#1E293B] border border-slate-700 rounded-xl p-6 shadow-sm hover:border-slate-600 transition-all duration-200 group hover:translate-y-[-2px]",
       className
     )}>
       <div className="flex items-center justify-between mb-4">

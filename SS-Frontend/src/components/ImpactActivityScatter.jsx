@@ -14,7 +14,7 @@ const CustomTooltip = ({ active, payload }) => {
     }, {});
 
     return (
-      <div className="bg-slate-900/90 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[220px] z-50">
+      <div className="bg-[#1E293B] border border-slate-700 p-4 rounded-xl shadow-xl min-w-[220px] z-50">
         <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
           <span className="font-bold text-white text-base tracking-tight">{data.name}</span>
           {data.silentArchitect && <SilentArchitectBadge className="scale-75 origin-left" />}
@@ -81,7 +81,7 @@ export function ImpactActivityScatter({ data, selectedTeam, onNodeClick }) {
   };
 
   return (
-    <div className="h-[500px] w-full bg-slate-900/40 backdrop-blur-sm border border-white/10 rounded-3xl p-6 shadow-xl relative">
+    <div className="h-[500px] w-full bg-[#1E293B] border border-slate-700 rounded-3xl p-6 shadow-sm relative">
       <div className="flex justify-between items-center mb-4 px-2">
         <h3 className="text-lg font-semibold text-white">Impact vs. Activity Distribution</h3>
         <div className="flex gap-4 text-xs">

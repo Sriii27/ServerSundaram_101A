@@ -16,15 +16,15 @@ export function EmployeeDrawer({ isOpen, onClose, employee }) {
         <div className="fixed inset-0 z-50 flex justify-end">
             {/* Backdrop */}
             <div
-                className="absolute inset-0 bg-slate-950/40 backdrop-blur-md transition-opacity"
+                className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
                 onClick={onClose}
             />
 
             {/* Drawer */}
-            <div className="relative w-full max-w-lg bg-slate-900/90 backdrop-blur-2xl border-l border-white/10 shadow-2xl h-full flex flex-col animate-in slide-in-from-right duration-500 sm:duration-300 ease-out">
+            <div className="relative w-full max-w-lg bg-[#1E293B] border-l border-slate-700 shadow-2xl h-full flex flex-col animate-in slide-in-from-right duration-500 sm:duration-300 ease-out">
 
                 {/* Header */}
-                <div className="p-6 border-b border-white/5 flex justify-between items-start bg-slate-900/50 z-10 shrink-0">
+                <div className="p-6 border-b border-slate-700 flex justify-between items-start bg-[#1E293B] z-10 shrink-0">
                     <div>
                         <h2 className="text-2xl font-bold text-white tracking-tight">{employee.name}</h2>
                         <div className="flex items-center gap-3 text-slate-400 mt-1.5 text-sm">

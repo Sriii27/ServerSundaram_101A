@@ -1,17 +1,21 @@
 import os
 from dotenv import load_dotenv
-from groq import Groq
+
+try:
+    from groq import Groq
+except ImportError:
+    Groq = None
 
 # Load .env once at startup
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-if not GROQ_API_KEY:
-    raise RuntimeError("GROQ_API_KEY is missing")
-
 # ✅ Groq client (this is NOT OpenAI)
-client = Groq(api_key=GROQ_API_KEY)
+if Groq and GROQ_API_KEY:
+    client = Groq(api_key=GROQ_API_KEY)
+else:
+    client = None
 
 
 def employee_prompt(facts: dict) -> str:
@@ -41,21 +45,19 @@ def employee_prompt(facts: dict) -> str:
 def generate_ai_summary(prompt: str) -> str:
     try:
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",  # ✅ ACTIVE GROQ MODEL
+            model="llama-3.1-8b-instant",
             messages=[
                 {
                     "role": "system",
                     "content": "You are an HR analytics engine that generates factual performance reports from structured employee records."
-                }
-,
+                },
                 {
                     "role": "user",
                     "content": prompt
                 }
             ],
             temperature=0.2,
-            max_tokens=200
-,
+            max_tokens=200,
         )
 
         return response.choices[0].message.content.strip()

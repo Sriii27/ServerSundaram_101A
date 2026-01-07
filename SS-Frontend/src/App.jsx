@@ -3,6 +3,8 @@ import { DashboardLayout } from './layouts/DashboardLayout';
 import Dashboard from './pages/Dashboard';
 import AboutMetrics from './pages/AboutMetrics';
 import Login from './pages/Login';
+import Contributors from './pages/Contributors';
+import ActivityLogs from './pages/ActivityLogs';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {
@@ -16,6 +18,26 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <Dashboard />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contributors"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <Contributors />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/activity"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <ActivityLogs />
               </DashboardLayout>
             </ProtectedRoute>
           }

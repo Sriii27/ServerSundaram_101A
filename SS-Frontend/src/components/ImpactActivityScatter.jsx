@@ -38,18 +38,12 @@ const CustomTooltip = ({ active, payload }) => {
 
         <div className="space-y-2 text-xs">
           <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1.5">Top Contributions</p>
-          <div className="flex justify-between items-center group">
-            <span className="text-slate-400 group-hover:text-slate-300 transition-colors">Bug Fixes</span>
-            <span className={`font-mono font-medium ${breakdown['Bug Fixes'] > 80 ? 'text-emerald-400' : 'text-slate-400'}`}>{breakdown['Bug Fixes'] || 0}</span>
-          </div>
-          <div className="flex justify-between items-center group">
-            <span className="text-slate-400 group-hover:text-slate-300 transition-colors">Code Reviews</span>
-            <span className={`font-mono font-medium ${breakdown['Code Reviews'] > 80 ? 'text-emerald-400' : 'text-slate-400'}`}>{breakdown['Code Reviews'] || 0}</span>
-          </div>
-          <div className="flex justify-between items-center group">
-            <span className="text-slate-400 group-hover:text-slate-300 transition-colors">Architecture</span>
-            <span className={`font-mono font-medium ${breakdown['Architecture'] > 80 ? 'text-emerald-400' : 'text-slate-400'}`}>{breakdown['Architecture'] || 0}</span>
-          </div>
+          {(data.impactBreakdown || []).slice(0, 3).map((item) => (
+            <div key={item.metric} className="flex justify-between items-center group">
+              <span className="text-slate-400 group-hover:text-slate-300 transition-colors">{item.metric}</span>
+              <span className={`font-mono font-medium ${item.score > 80 ? 'text-emerald-400' : 'text-slate-400'}`}>{item.stats.count}</span>
+            </div>
+          ))}
         </div>
 
         {data.silentArchitect && (
@@ -130,14 +124,14 @@ export function ImpactActivityScatter({ data, selectedTeam, onNodeClick }) {
           />
           <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: '3 3', stroke: '#475569' }} />
 
-          {/* Quadrant Lines */}
-          <ReferenceLine x={50} stroke="#475569" strokeDasharray="3 3" strokeWidth={1} />
-          <ReferenceLine y={50} stroke="#475569" strokeDasharray="3 3" strokeWidth={1} />
+          {/* Quadrant Lines (Aligned with Silent Architect Thresholds) */}
+          <ReferenceLine x={60} stroke="#475569" strokeDasharray="3 3" strokeWidth={1} label={{ value: 'Activity Threshold', position: 'insideTop', fill: '#475569', fontSize: 10 }} />
+          <ReferenceLine y={65} stroke="#475569" strokeDasharray="3 3" strokeWidth={1} label={{ value: 'Impact Threshold', position: 'insideRight', fill: '#475569', fontSize: 10 }} />
 
           {/* Quadrant Labels */}
           <ReferenceLine y={95} x={95} label={{ value: 'High Performers', position: 'insideTopRight', fill: '#10b981', fontSize: 13, fontWeight: 700 }} stroke="none" />
-          <ReferenceLine y={95} x={5} label={{ value: 'Hidden Gems', position: 'insideTopLeft', fill: '#fbbf24', fontSize: 13, fontWeight: 700 }} stroke="none" />
-          <ReferenceLine y={5} x={95} label={{ value: 'Over-Visible', position: 'insideBottomRight', fill: '#60a5fa', fontSize: 13, fontWeight: 500 }} stroke="none" />
+          <ReferenceLine y={95} x={5} label={{ value: 'Silent Architects', position: 'insideTopLeft', fill: '#fbbf24', fontSize: 13, fontWeight: 700 }} stroke="none" />
+          <ReferenceLine y={5} x={95} label={{ value: 'Visible Activity', position: 'insideBottomRight', fill: '#60a5fa', fontSize: 13, fontWeight: 500 }} stroke="none" />
           <ReferenceLine y={5} x={5} label={{ value: 'Low Engagement', position: 'insideBottomLeft', fill: '#94a3b8', fontSize: 13, fontWeight: 500 }} stroke="none" />
 
           <Scatter name="Employees" data={data}>

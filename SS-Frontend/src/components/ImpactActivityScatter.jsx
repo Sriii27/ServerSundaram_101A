@@ -14,37 +14,47 @@ const CustomTooltip = ({ active, payload }) => {
     }, {});
 
     return (
-      <div className="bg-slate-900 border border-slate-700 p-3 rounded-lg shadow-xl ring-1 ring-black/5 min-w-[200px] z-50">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-semibold text-white">{data.name}</span>
+      <div className="bg-slate-900/90 backdrop-blur-md border border-white/10 p-4 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[220px] z-50">
+        <div className="flex items-center gap-2 mb-2 pb-2 border-b border-white/10">
+          <span className="font-bold text-white text-base tracking-tight">{data.name}</span>
           {data.silentArchitect && <SilentArchitectBadge className="scale-75 origin-left" />}
         </div>
-        <p className="text-slate-400 text-sm mb-3">{data.role} &bull; <span className="text-slate-300">{data.team}</span></p>
+        <p className="text-slate-400 text-xs font-medium mb-3 flex items-center gap-2">
+          <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/5">{data.role}</span>
+          <span className="w-1 h-1 rounded-full bg-slate-600"></span>
+          <span className="text-slate-300">{data.team}</span>
+        </p>
 
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-3 text-xs border-b border-slate-800 pb-3">
-          <div className="flex justify-between"><span className="text-emerald-400">Impact:</span> <span className="font-mono text-white">{data.impactScore}</span></div>
-          <div className="flex justify-between"><span className="text-blue-400">Activity:</span> <span className="font-mono text-white">{data.activityScore}</span></div>
+        <div className="grid grid-cols-2 gap-3 mb-4 text-xs">
+          <div className="bg-emerald-500/10 border border-emerald-500/20 p-2 rounded-lg">
+            <span className="block text-emerald-400/80 mb-0.5 font-bold uppercase text-[10px]">Impact</span>
+            <span className="font-mono text-white text-lg font-bold">{data.impactScore}</span>
+          </div>
+          <div className="bg-blue-500/10 border border-blue-500/20 p-2 rounded-lg">
+            <span className="block text-blue-400/80 mb-0.5 font-bold uppercase text-[10px]">Activity</span>
+            <span className="font-mono text-white text-lg font-bold">{data.activityScore}</span>
+          </div>
         </div>
 
-        <div className="space-y-1.5 text-xs">
-          <p className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Top Contributions</p>
-          <div className="flex justify-between items-center">
-            <span className="text-slate-400">Bug Fixes</span>
-            <span className={`font-mono ${breakdown['Bug Fixes'] > 80 ? 'text-emerald-400' : 'text-slate-300'}`}>{breakdown['Bug Fixes'] || 0}</span>
+        <div className="space-y-2 text-xs">
+          <p className="text-[10px] uppercase tracking-wider text-slate-500 font-bold mb-1.5">Top Contributions</p>
+          <div className="flex justify-between items-center group">
+            <span className="text-slate-400 group-hover:text-slate-300 transition-colors">Bug Fixes</span>
+            <span className={`font-mono font-medium ${breakdown['Bug Fixes'] > 80 ? 'text-emerald-400' : 'text-slate-400'}`}>{breakdown['Bug Fixes'] || 0}</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-slate-400">Code Reviews</span>
-            <span className={`font-mono ${breakdown['Code Reviews'] > 80 ? 'text-emerald-400' : 'text-slate-300'}`}>{breakdown['Code Reviews'] || 0}</span>
+          <div className="flex justify-between items-center group">
+            <span className="text-slate-400 group-hover:text-slate-300 transition-colors">Code Reviews</span>
+            <span className={`font-mono font-medium ${breakdown['Code Reviews'] > 80 ? 'text-emerald-400' : 'text-slate-400'}`}>{breakdown['Code Reviews'] || 0}</span>
           </div>
-          <div className="flex justify-between items-center">
-            <span className="text-slate-400">Architecture</span>
-            <span className={`font-mono ${breakdown['Architecture'] > 80 ? 'text-emerald-400' : 'text-slate-300'}`}>{breakdown['Architecture'] || 0}</span>
+          <div className="flex justify-between items-center group">
+            <span className="text-slate-400 group-hover:text-slate-300 transition-colors">Architecture</span>
+            <span className={`font-mono font-medium ${breakdown['Architecture'] > 80 ? 'text-emerald-400' : 'text-slate-400'}`}>{breakdown['Architecture'] || 0}</span>
           </div>
         </div>
 
         {data.silentArchitect && (
-          <div className="mt-3 pt-2 border-t border-amber-500/30 flex items-center gap-2 text-amber-500 font-medium text-xs">
-            <Star className="w-3 h-3 fill-current" /> Silent Architect
+          <div className="mt-4 pt-3 border-t border-white/10 flex items-center gap-2 text-amber-500 font-bold text-xs bg-amber-500/5 -mx-4 -mb-4 p-3 rounded-b-xl">
+            <Star className="w-3.5 h-3.5 fill-current" /> SILENT ARCHITECT DETECTED
           </div>
         )}
       </div>
@@ -71,7 +81,7 @@ export function ImpactActivityScatter({ data, selectedTeam, onNodeClick }) {
   };
 
   return (
-    <div className="h-[500px] w-full bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-sm relative">
+    <div className="h-[500px] w-full bg-slate-900/40 backdrop-blur-sm border border-white/10 rounded-3xl p-6 shadow-xl relative">
       <div className="flex justify-between items-center mb-4 px-2">
         <h3 className="text-lg font-semibold text-white">Impact vs. Activity Distribution</h3>
         <div className="flex gap-4 text-xs">

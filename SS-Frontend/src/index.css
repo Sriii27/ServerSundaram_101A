@@ -4,8 +4,32 @@
   html {
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
-    background-color: #0f172a; /* Slate 950 */
-    color: #f8fafc; /* Slate 50 */
+    background: radial-gradient(ellipse at top, #1e293b 0%, #0f172a 40%, #020617 100%);
+    /* Deep spotlight effect */
+    background-attachment: fixed;
+    /* fix gradient on scroll */
+    color: #f8fafc;
+    /* Slate 50 */
+    min-height: 100%;
+  }
+
+  /* Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
   }
 }
 

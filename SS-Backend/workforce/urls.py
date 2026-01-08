@@ -5,6 +5,7 @@ from .views import get_thresholds
 from .views import dashboard_summary, dashboard_scatter, dashboard_leaderboard
 from .views import employee_breakdown
 from .views import metrics_distribution, metrics_weights, get_metric_config
+from .views import EmployeeScoreAPIView
 from .views import (
     get_raw_employees,
     get_raw_contributions,
@@ -34,4 +35,7 @@ urlpatterns = [
     path("v1/contributions/raw", get_raw_contributions),
     path("v1/activities/raw", get_raw_activities),
     path("v1/issues/raw", get_raw_issues),
+    
+    # Scoring Engine API
+    path("v1/employees/<int:employee_id>/score/", EmployeeScoreAPIView.as_view(), name="employee-score")
 ]

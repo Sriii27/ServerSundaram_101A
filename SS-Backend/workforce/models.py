@@ -1,5 +1,5 @@
 from django.db import models
-
+import uuid
 class Meta:
     db_table = "employees"
     indexes = [
@@ -132,3 +132,106 @@ class ImpactScore(models.Model):
 
     class Meta:
         db_table = "impact_scores"
+
+class Document(models.Model):
+    document_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    title = models.TextField()
+    document_type = models.CharField(max_length=100)
+    owner_employee = models.ForeignKey(
+        Employee,
+        on_delete=models.DO_NOTHING,
+        db_column="owner_employee_id",
+        related_name="documents"
+    )
+    status = models.CharField(max_length=50)
+    scope = models.CharField(max_length=50, null=True, blank=True)
+    created_at = models.DateTimeField()
+
+    class Meta:
+        db_table = "documents"
+        managed = False
+        
+        
+class DocumentOutcome(models.Model):
+    outcome_id = models.UUIDField(primary_key=True)
+    document = models.ForeignKey(
+        Document,
+        on_delete=models.DO_NOTHING,
+        db_column="document_id",
+        related_name="outcomes"
+    )
+    outcome_type = models.CharField(max_length=50)
+    contribution = models.ForeignKey(
+        Contribution,
+        on_delete=models.DO_NOTHING,
+        db_column="contribution_id",
+        null=True,
+        blank=True
+    )
+    validated_by = models.ForeignKey(
+        Employee,
+        on_delete=models.DO_NOTHING,
+        db_column="validated_by",
+        related_name="+"
+    )
+    created_at = models.DateTimeField()
+
+    class Meta:
+        db_table = "document_outcomes"
+        managed = False
+
+
+
+class MeetingOutcome(models.Model):
+    outcome_id = models.UUIDField(primary_key=True)
+    meeting_id = models.UUIDField()
+    outcome_type = models.CharField(max_length=50)
+    related_entity = models.CharField(max_length=50)
+    owner_employee = models.ForeignKey(
+        Employee,
+        on_delete=models.DO_NOTHING,
+        db_column="owner_employee_id",
+        related_name="meeting_outcomes"
+    )
+    validated_by = models.ForeignKey(
+        Employee,
+        on_delete=models.DO_NOTHING,
+        db_column="validated_by",
+        related_name="+"
+    )
+    created_at = models.DateTimeField()
+
+    class Meta:
+        db_table = "meeting_outcomes"
+        managed = False
+
+
+
+class MentorshipSession(models.Model):
+    session_id = models.UUIDField(primary_key=True)
+    mentor_employee = models.ForeignKey(
+        Employee,
+        on_delete=models.DO_NOTHING,
+        db_column="mentor_employee_id",
+        related_name="mentorships_given"
+    )
+    mentee_employee = models.ForeignKey(
+        Employee,
+        on_delete=models.DO_NOTHING,
+        db_column="mentee_employee_id",
+        related_name="mentorships_received"
+    )
+    topic = models.TextField()
+    outcome = models.TextField()
+    session_date = models.DateTimeField()
+    validated_by = models.ForeignKey(
+        Employee,
+        on_delete=models.DO_NOTHING,
+        db_column="validated_by",
+        related_name="+"
+    )
+    created_at = models.DateTimeField()
+
+    class Meta:
+        db_table = "mentorship_sessions"
+        managed = False

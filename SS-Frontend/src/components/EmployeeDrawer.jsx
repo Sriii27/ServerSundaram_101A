@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Star, Zap, Activity, Info, Loader2 } from 'lucide-react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
 import { api } from '../services/api';
+import { getDisparityColor } from '../utils/metrics/disparity';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#6366f1'];
 
@@ -116,6 +117,23 @@ export function EmployeeDrawer({ isOpen, onClose, employee }) {
                             </div>
                         </div>
                     )}
+                    {/* Effiency Disparity Card */}
+                    <div className="bg-zinc-900/50 rounded-2xl p-5 border border-zinc-800 flex items-center justify-between">
+                        <div>
+                            <div className="flex items-center gap-2 mb-1 text-zinc-400 text-xs font-bold uppercase tracking-wider">
+                                <Zap className="w-4 h-4 text-purple-400" /> Efficiency Disparity
+                            </div>
+                            <div className="text-xs text-zinc-500">
+                                Gap between Impact and Activity
+                            </div>
+                        </div>
+                        <div className="text-right">
+                            <div className={`text-3xl font-mono font-bold tracking-tight ${getDisparityColor(employee.disparityScore)}`}>
+                                {employee.disparityScore > 0 ? '+' : ''}{employee.disparityScore}
+                            </div>
+                            <div className="text-xs text-zinc-500 font-medium">Points</div>
+                        </div>
+                    </div>
 
                     {/* Quick Insight */}
                     <div className="bg-gradient-to-r from-zinc-900 to-black rounded-xl p-5 border border-zinc-800 shadow-sm relative overflow-hidden">

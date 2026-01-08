@@ -259,20 +259,5 @@ export const api = {
         const res = await fetch(`${API_BASE_URL}/issues/raw`);
         if (!res.ok) throw new Error('Failed to fetch raw issues');
         return await res.json();
-    },
-
-    /**
-     * Get employee score using scoring_engine API
-     * Returns: { employeeId, activityScore, impactScore, finalScore, silentArchitect }
-     */
-    async getEmployeeScore(employeeId) {
-        try {
-            const response = await fetch(`${API_BASE_URL}/employees/${employeeId}/score/`);
-            if (!response.ok) throw new Error('Failed to fetch employee score');
-            return await response.json();
-        } catch (error) {
-            console.error("API Error (getEmployeeScore):", error);
-            throw error;
-        }
     }
 };

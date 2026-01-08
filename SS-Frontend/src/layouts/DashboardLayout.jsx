@@ -11,7 +11,6 @@ export function DashboardLayout({ children }) {
         { icon: Users, label: 'Contributors', path: '/contributors' },
         { icon: Activity, label: 'Activity', path: '/activity' },
         { icon: Scale, label: 'Metrics', path: '/metrics' },
-        { icon: Settings, label: 'Settings', path: '/settings' },
     ];
 
     return (
@@ -68,11 +67,15 @@ export function DashboardLayout({ children }) {
                 <div className="absolute bottom-0 w-full p-4 border-t border-zinc-800">
                     <div className="flex items-center gap-3 px-2 py-2">
                         <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-300">
-                            JD
+                            {(localStorage.getItem('user_name') || 'Guest').substring(0, 2).toUpperCase()}
                         </div>
                         <div className="flex-1">
-                            <div className="text-sm font-medium text-white">Jane Doe</div>
-                            <div className="text-xs text-zinc-500">Engineering Lead</div>
+                            <div className="text-sm font-medium text-white">
+                                {localStorage.getItem('user_name') || 'Guest User'}
+                            </div>
+                            <div className="text-xs text-zinc-500 capitalize">
+                                {localStorage.getItem('user_role') || 'Viewer'}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -102,11 +105,6 @@ export function DashboardLayout({ children }) {
                     </div>
 
                     <div className="flex items-center gap-4">
-                        <button className="relative p-2 text-zinc-400 hover:text-sky-400 hover:bg-zinc-800 rounded-lg transition-colors">
-                            <Bell className="w-5 h-5" />
-                            <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-sky-500 border-2 border-[#09090B]"></span>
-                        </button>
-
                         <Link to="/login" className="p-2 text-zinc-400 hover:text-sky-400 hover:bg-zinc-800 rounded-lg transition-colors" title="Sign Out">
                             <LogOut className="w-5 h-5" />
                         </Link>

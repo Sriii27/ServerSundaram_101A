@@ -170,11 +170,11 @@ export default function Dashboard() {
                 <table className="min-w-full divide-y divide-zinc-800/50">
                   <thead className="bg-[#09090B] sticky top-0 z-10">
                     <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider">
-                        Employee
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-zinc-400 uppercase tracking-wider w-[70%]">
+                        Contributor Profile
                       </th>
-                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-zinc-400 uppercase tracking-wider">
-                        Impact
+                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-zinc-400 uppercase tracking-wider w-[30%]">
+                        Impact Score
                       </th>
                     </tr>
                   </thead>
@@ -189,26 +189,28 @@ export default function Dashboard() {
                           onClick={() => setSelectedEmployee(emp.id)}
                         >
                           <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-start gap-3">
                               <div className={`
-                                w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs
+                                flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs mt-0.5
                                 ${idx === 0 ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20' :
                                   idx === 1 ? 'bg-zinc-700/50 text-zinc-300' :
                                     idx === 2 ? 'bg-amber-900/20 text-amber-700' : 'bg-zinc-800 text-zinc-500'}
                               `}>
                                 #{idx + 1}
                               </div>
-                              <div>
-                                <div className="font-medium text-zinc-200 group-hover:text-white transition-colors flex items-center gap-2">
-                                  {emp.name}
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-zinc-200 group-hover:text-white transition-colors flex flex-wrap items-center gap-2">
+                                  <span className="whitespace-normal break-words leading-tight">{emp.name}</span>
                                   {emp.silentArchitect && <SilentArchitectBadge size="sm" />}
                                 </div>
-                                <div className="text-xs text-zinc-500">{emp.role}</div>
+                                <div className="text-xs text-zinc-500 mt-0.5 whitespace-normal break-words leading-tight">
+                                  {emp.role}
+                                </div>
                               </div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 text-right">
-                            <span className="font-mono font-bold text-sky-400 group-hover:text-sky-300 transition-colors">
+                          <td className="px-6 py-4 text-right align-top pt-5">
+                            <span className="font-mono font-bold text-sky-400 group-hover:text-sky-300 transition-colors text-sm">
                               {emp.impactScore}
                             </span>
                           </td>
@@ -216,9 +218,7 @@ export default function Dashboard() {
                       ))}
                   </tbody>
                 </table>
-                <button className="text-xs text-zinc-400 hover:text-white font-medium inline-flex items-center gap-1.5 transition-colors uppercase tracking-wider group">
-                  View Full Report <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                </button>
+               
               </div>
             </>
           </div >

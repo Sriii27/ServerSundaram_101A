@@ -1,6 +1,7 @@
 
 
-const API_BASE_URL = import.meta.env.API_URL
+const BASE_URL = import.meta.env.API_URL
+const API_BASE_URL = `${BASE_URL}/api/v1`
 
 export const api = {
     /**

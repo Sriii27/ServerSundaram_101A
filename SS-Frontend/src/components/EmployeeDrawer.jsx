@@ -1,16 +1,44 @@
-import React from 'react';
-import { X, Star, Zap, Activity, Info } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Star, Zap, Activity, Info, Loader2 } from 'lucide-react';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { api } from '../services/api';
 
 const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#6366f1'];
 
 export function EmployeeDrawer({ isOpen, onClose, employee }) {
+    const [scoreData, setScoreData] = useState(null);
+    const [loadingScore, setLoadingScore] = useState(false);
+
+    useEffect(() => {
+        if (isOpen && employee?.id) {
+            setLoadingScore(true);
+            api.getEmployeeScore(employee.id)
+                .then(data => {
+                    setScoreData(data);
+                })
+                .catch(err => {
+                    console.error("Failed to load scoring_engine data", err);
+                    setScoreData(null);
+                })
+                .finally(() => {
+                    setLoadingScore(false);
+                });
+        } else {
+            setScoreData(null);
+        }
+    }, [isOpen, employee?.id]);
+
     if (!isOpen || !employee) return null;
 
     const data = employee.impactBreakdown || [];
 
     // Determine top contribution for insight text
     const topContribution = [...data].sort((a, b) => b.score - a.score)[0];
+    
+    // Use scoring_engine data if available, otherwise fallback to employee data
+    const displayImpactScore = scoreData?.impactScore ?? employee.impactScore;
+    const displayActivityScore = scoreData?.activityScore ?? employee.activityScore;
+    const isSilentArchitect = scoreData?.silentArchitect ?? employee.silentArchitect;
 
     return (
         <div className="fixed inset-0 z-50 flex justify-end">
@@ -49,18 +77,45 @@ export function EmployeeDrawer({ isOpen, onClose, employee }) {
                         <div className="bg-emerald-500/5 border border-emerald-500/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
                             <div className="flex items-center gap-2 mb-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
                                 <Zap className="w-4 h-4" /> Impact Score
+                                {loadingScore && <Loader2 className="w-3 h-3 animate-spin" />}
                             </div>
-                            <div className="text-4xl font-mono font-bold text-white tracking-tight">{employee.impactScore}</div>
-                            <div className="text-xs text-emerald-500/70 mt-1 font-medium">Top 5% in {employee.team}</div>
+                            <div className="text-4xl font-mono font-bold text-white tracking-tight">
+                                {loadingScore ? '...' : displayImpactScore}
+                            </div>
+                            <div className="text-xs text-emerald-500/70 mt-1 font-medium">
+                                {scoreData ? 'Scoring Engine API' : `Top 5% in ${employee.team}`}
+                            </div>
                         </div>
                         <div className="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-5 flex flex-col items-center justify-center text-center">
                             <div className="flex items-center gap-2 mb-2 text-blue-400 text-xs font-bold uppercase tracking-wider">
                                 <Activity className="w-4 h-4" /> Activity Score
+                                {loadingScore && <Loader2 className="w-3 h-3 animate-spin" />}
                             </div>
-                            <div className="text-4xl font-mono font-bold text-white tracking-tight">{employee.activityScore}</div>
-                            <div className="text-xs text-blue-500/70 mt-1 font-medium">Based on 30-day avg</div>
+                            <div className="text-4xl font-mono font-bold text-white tracking-tight">
+                                {loadingScore ? '...' : displayActivityScore}
+                            </div>
+                            <div className="text-xs text-blue-500/70 mt-1 font-medium">
+                                {scoreData ? 'Scoring Engine API' : 'Based on 30-day avg'}
+                            </div>
                         </div>
                     </div>
+
+                    {/* Scoring Engine Additional Info */}
+                    {scoreData && (
+                        <div className="bg-gradient-to-r from-purple-900/20 to-blue-900/20 rounded-xl p-4 border border-purple-500/20">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <h3 className="text-sm font-bold text-white mb-1">Scoring Engine Results</h3>
+                                    <p className="text-xs text-zinc-400">Final Score: <span className="text-purple-400 font-mono font-bold">{scoreData.finalScore}</span></p>
+                                </div>
+                                {isSilentArchitect && (
+                                    <div className="px-3 py-1 bg-amber-500/20 border border-amber-500/30 rounded-lg">
+                                        <span className="text-xs font-bold text-amber-400">Silent Architect</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Quick Insight */}
                     <div className="bg-gradient-to-r from-zinc-900 to-black rounded-xl p-5 border border-zinc-800 shadow-sm relative overflow-hidden">
@@ -70,7 +125,7 @@ export function EmployeeDrawer({ isOpen, onClose, employee }) {
                         </h3>
                         <p className="text-zinc-300 text-sm italic leading-relaxed relative z-10">
                             "{employee.name}'s primary impact driver is <strong className="text-white font-medium">{topContribution?.metric}</strong>.
-                            {employee.silentArchitect
+                            {isSilentArchitect
                                 ? " Their high-value output despite lower visibility classifies them as a Silent Architect."
                                 : " Their output aligns well with their visibility levels."}
                             "
@@ -124,7 +179,7 @@ export function EmployeeDrawer({ isOpen, onClose, employee }) {
 
                                     {/* Center Text */}
                                     <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle">
-                                        <tspan x="50%" dy="-0.5em" fontSize="28" fill="white" fontWeight="bold" fontFamily="monospace">{employee.impactScore}</tspan>
+                                        <tspan x="50%" dy="-0.5em" fontSize="28" fill="white" fontWeight="bold" fontFamily="monospace">{displayImpactScore}</tspan>
                                         <tspan x="50%" dy="1.6em" fontSize="11" fill="#64748b" fontWeight="500" letterSpacing="0.05em">TOTAL</tspan>
                                     </text>
 

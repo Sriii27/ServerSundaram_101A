@@ -15,12 +15,6 @@ from .models import Team, Employee, ImpactScore
 from workforce.services.ai import employee_prompt, generate_ai_summary
 from workforce.services.employee_analytics import get_employee_facts
 from django.contrib.auth import authenticate
-from rest_framework.views import APIView
-from .services.scoring_engine import (
-    calculate_activity_score,
-    calculate_impact_score,
-    calculate_final_score
-)
 
 @api_view(['POST'])
 def login_view(request):
@@ -626,40 +620,3 @@ def get_raw_issues(request):
         "employee_id", "severity", "status"
     )
     return Response({"issues": list(issues)}, status=status.HTTP_200_OK)
-
-
-# Scoring Engine API Endpoint
-class EmployeeScoreAPIView(APIView):
-    """
-    API endpoint that uses the scoring_engine to calculate scores for an employee.
-    Returns camelCase field names for frontend compatibility.
-    """
-    def get(self, request, employee_id):
-        try:
-            # Check if employee exists
-            employee = Employee.objects.filter(pk=employee_id).first()
-            if not employee:
-                return Response(
-                    {"error": "Employee not found"},
-                    status=status.HTTP_404_NOT_FOUND
-                )
-
-            # Use the scoring_engine API
-            score_data = calculate_final_score(employee_id)
-
-            # Return camelCase field names for frontend
-            return Response({
-                "employeeId": employee_id,
-                "activityScore": score_data["activity_score"],
-                "impactScore": score_data["impact_score"],
-                "finalScore": score_data["final_score"],
-                "silentArchitect": score_data["silent_architect"]
-            }, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            return Response(
-                {"error": f"Failed to calculate scores: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
-
-

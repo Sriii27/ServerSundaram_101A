@@ -76,7 +76,7 @@ export default function Dashboard() {
       <EmployeeDrawer
         isOpen={!!selectedEmployee}
         onClose={() => setSelectedEmployee(null)}
-        employeeId={selectedEmployee}
+        employee={filteredEmployees.find(e => e.id === selectedEmployee)}
       />
 
       {/* Header & Controls */}
@@ -218,7 +218,7 @@ export default function Dashboard() {
                       ))}
                   </tbody>
                 </table>
-               
+
               </div>
             </>
           </div >

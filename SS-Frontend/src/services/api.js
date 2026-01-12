@@ -1,6 +1,7 @@
 
 
-const BASE_URL = import.meta.env.API_URL
+// Use VITE_ prefix for Vite environment variables, with fallback to localhost
+const BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.API_URL || 'http://127.0.0.1:8000'
 const API_BASE_URL = `${BASE_URL}/api/v1`
 
 export const api = {

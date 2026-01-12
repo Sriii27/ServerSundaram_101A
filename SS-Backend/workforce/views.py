@@ -415,27 +415,28 @@ def dashboard_leaderboard(request):
     team_name = request.GET.get("team", "").strip()
     limit = int(request.GET.get("limit", 5))
 
-    if not team_name:
-         return Response(
-            {"error": "Team parameter is required"},
-            status=status.HTTP_400_BAD_REQUEST
-        )
-
-    # Calculate fresh for this team
-    data = calculate_realtime_metrics(team_name)
+    if not team_name or team_name == "All Teams":
+        # If no team specified or "All Teams", get all data
+        data = calculate_realtime_metrics(None)
+    else:
+        # Calculate fresh for this team
+        data = calculate_realtime_metrics(team_name)
     
-    # Sort by Impact Score Descending
-    sorted_data = sorted(data, key=lambda x: x["impact_score"], reverse=True)[:limit]
+    if not data:
+        return Response([], status=status.HTTP_200_OK)
+    
+    # Sort by Impact Score Descending (using correct camelCase key)
+    sorted_data = sorted(data, key=lambda x: x["impactScore"], reverse=True)[:limit]
 
     return Response([
         {
-            "id": d["employee"].pk,
-            "name": d["employee"].name,
-            "impactScore": d["impact_score"],
-            "role": d["employee"].role,
-            "silentArchitect": d["silent_architect"]
+            "id": d["id"],
+            "name": d["name"],
+            "impactScore": d["impactScore"],
+            "role": d["role"],
+            "silentArchitect": d["silentArchitect"]
         } for d in sorted_data
-    ])
+    ], status=status.HTTP_200_OK)
 
 
 @api_view(["GET"])
@@ -445,8 +446,8 @@ def employee_breakdown(request, id):
         # We need to calc metrics just for this emp's team to get the relative score
         team_metrics = calculate_realtime_metrics(emp.team.team_name)
         
-        # Find our employee in the results
-        emp_metric = next((x for x in team_metrics if x["employee"].pk == emp.pk), None)
+        # Find our employee in the results (using correct key "id" instead of "employee".pk)
+        emp_metric = next((x for x in team_metrics if x["id"] == emp.pk), None)
         
         if not emp_metric:
              return Response({"error": "Metrics unavailable"}, status=404)
@@ -462,19 +463,19 @@ def employee_breakdown(request, id):
     breakdown = [
         {
             "metric": "Code Reviews",
-            "score": min(100, emp_metric["activity_score"] + 10),
+            "score": min(100, emp_metric["activityScore"] + 10),
             "description": f"Reviewed {review_count} pull requests with deep technical feedback.",
             "stats": {"count": review_count, "label": "PRs Reviewed"}
         },
         {
             "metric": "Bug Fixes",
-            "score": min(100, emp_metric["impact_score"] - 5),
+            "score": min(100, emp_metric["impactScore"] - 5),
             "description": f"Resolved {bug_count} critical/major issues affecting stability.",
             "stats": {"count": bug_count, "label": "Bugs Fixed"}
         },
         {
             "metric": "Architecture",
-            "score": emp_metric["impact_score"],
+            "score": emp_metric["impactScore"],
             "description": f"Led {arch_count} system design initiatives.",
             "stats": {"count": arch_count, "label": "Design Docs"}
         }
@@ -482,14 +483,14 @@ def employee_breakdown(request, id):
 
     insight = (
         "A classic Silent Architect profile: High impact with lower visible activity."
-        if emp_metric["silent_architect"]
+        if emp_metric["silentArchitect"]
         else "A balanced contributor with visible and impactful work."
     )
 
     return Response({
         "id": emp.pk,
         "name": emp.name,
-        "totalImpact": emp_metric["impact_score"],
+        "totalImpact": emp_metric["impactScore"],
         "breakdown": breakdown,
         "insightText": insight
     }, status=status.HTTP_200_OK)
@@ -514,11 +515,11 @@ def metrics_distribution(request):
     distribution = []
 
     for low, high in buckets:
-        # Count stats in range
+        # Count stats in range (using correct camelCase key)
         if high == 100:
-            count = sum(1 for d in data if low <= d["impact_score"] <= high)
+            count = sum(1 for d in data if low <= d["impactScore"] <= high)
         else:
-            count = sum(1 for d in data if low <= d["impact_score"] < high)
+            count = sum(1 for d in data if low <= d["impactScore"] < high)
             
         distribution.append({
             "range": f"{low}-{high}",

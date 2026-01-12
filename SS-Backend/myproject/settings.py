@@ -32,10 +32,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://serversundaram-101a.vercel.app",
-]
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -64,8 +60,9 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://localhost:5174", # Fallback ports
+    "http://localhost:5174",  # Fallback ports
     "http://127.0.0.1:5174",
+    "https://serversundaram-101a.vercel.app",  # Production
 ]
 
 ROOT_URLCONF = 'myproject.urls'

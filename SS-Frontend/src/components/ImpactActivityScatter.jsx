@@ -65,7 +65,9 @@ const TEAM_COLORS = {
   "Default": "#64748b"      // Slate
 };
 
-export function ImpactActivityScatter({ data, selectedTeam, onNodeClick }) {
+export function ImpactActivityScatter({ data, selectedTeam, onNodeClick, onPointClick }) {
+  // Support both onNodeClick and onPointClick for compatibility
+  const handleClick = onPointClick || onNodeClick;
   const isAllTeams = selectedTeam === 'All Teams';
 
   const getFillColor = (entry) => {
@@ -143,7 +145,7 @@ export function ImpactActivityScatter({ data, selectedTeam, onNodeClick }) {
                 strokeWidth={entry.silentArchitect ? 2 : 0}
                 r={entry.silentArchitect ? 8 : 6}
                 className="hover:opacity-80 transition-opacity cursor-pointer"
-                onClick={() => onNodeClick && onNodeClick(entry)}
+                onClick={() => handleClick && handleClick(entry)}
               />
             ))}
           </Scatter>

@@ -5,6 +5,8 @@ import AboutMetrics from './pages/AboutMetrics';
 import Login from './pages/Login';
 import Contributors from './pages/Contributors';
 import ActivityLogs from './pages/ActivityLogs';
+import ContributionMatrix from './pages/ContributionMatrix';
+import DisparityAnalysis from './pages/DisparityAnalysis';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 function App() {
@@ -48,6 +50,26 @@ function App() {
             <ProtectedRoute>
               <DashboardLayout>
                 <AboutMetrics />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/contribution-matrix"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <ContributionMatrix />
+              </DashboardLayout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/disparity"
+          element={
+            <ProtectedRoute>
+              <DashboardLayout>
+                <DisparityAnalysis />
               </DashboardLayout>
             </ProtectedRoute>
           }

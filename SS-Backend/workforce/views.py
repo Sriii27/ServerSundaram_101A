@@ -620,3 +620,125 @@ def get_raw_issues(request):
         "employee_id", "severity", "status"
     )
     return Response({"issues": list(issues)}, status=status.HTTP_200_OK)
+
+
+@api_view(["GET"])
+def contribution_matrix(request):
+    """
+    Returns contribution matrix data aggregated by employee and contribution type.
+    Includes counts, total lines changed, and breakdowns by severity/complexity.
+    Optimized with bulk queries to avoid N+1 problem.
+    """
+    from django.db.models import Count, Sum
+    from collections import defaultdict
+    
+    try:
+        team_filter = request.GET.get("team")
+        
+        # Base query for employees
+        employees = Employee.objects.select_related("team").all()
+        if team_filter and team_filter != "All Teams":
+            employees = employees.filter(team__team_name__iexact=team_filter)
+        
+        employee_list = list(employees)
+        if not employee_list:
+            return Response({
+                "matrix": [],
+                "contribution_types": [],
+                "team_filter": team_filter or "All Teams"
+            }, status=status.HTTP_200_OK)
+        
+        employee_ids = [emp.pk for emp in employee_list]
+        
+        # Get all unique contribution types
+        contribution_types = list(Contribution.objects.values_list(
+            "contribution_type", flat=True
+        ).distinct())
+        
+        # Bulk fetch all contributions for these employees
+        all_contributions = Contribution.objects.filter(
+            employee_id__in=employee_ids
+        ).values(
+            "employee_id", "contribution_type", "lines_changed", 
+            "severity", "complexity"
+        )
+        
+        # Build data structure in memory
+        employee_data = defaultdict(lambda: {
+            "total_contributions": 0,
+            "total_lines_changed": 0,
+            "by_type": defaultdict(lambda: {
+                "count": 0,
+                "total_lines": 0,
+                "by_severity": {"MINOR": 0, "MAJOR": 0, "CRITICAL": 0},
+                "by_complexity": {"LOW": 0, "MEDIUM": 0, "HIGH": 0}
+            })
+        })
+        
+        # Process all contributions in one pass
+        for contrib in all_contributions:
+            emp_id = contrib["employee_id"]
+            ctype = contrib["contribution_type"]
+            lines = contrib["lines_changed"] or 0
+            severity = contrib["severity"]
+            complexity = contrib["complexity"]
+            
+            emp_data = employee_data[emp_id]
+            type_data = emp_data["by_type"][ctype]
+            
+            # Update counts and totals
+            emp_data["total_contributions"] += 1
+            emp_data["total_lines_changed"] += lines
+            type_data["count"] += 1
+            type_data["total_lines"] += lines
+            
+            # Update severity breakdown
+            if severity in type_data["by_severity"]:
+                type_data["by_severity"][severity] += 1
+            
+            # Update complexity breakdown
+            if complexity in type_data["by_complexity"]:
+                type_data["by_complexity"][complexity] += 1
+        
+        # Build final response
+        matrix_data = []
+        for emp in employee_list:
+            emp_id = emp.pk
+            emp_data = employee_data[emp_id]
+            
+            # Ensure all contribution types are represented
+            type_breakdown = {}
+            for ctype in contribution_types:
+                type_data = emp_data["by_type"][ctype]
+                type_breakdown[ctype] = {
+                    "count": type_data["count"],
+                    "total_lines": type_data["total_lines"],
+                    "by_severity": dict(type_data["by_severity"]),
+                    "by_complexity": dict(type_data["by_complexity"])
+                }
+            
+            matrix_data.append({
+                "employee_id": emp_id,
+                "employee_name": emp.name,
+                "employee_role": emp.role,
+                "team_name": emp.team.team_name,
+                "total_contributions": emp_data["total_contributions"],
+                "total_lines_changed": emp_data["total_lines_changed"],
+                "by_type": type_breakdown
+            })
+        
+        return Response({
+            "matrix": matrix_data,
+            "contribution_types": contribution_types,
+            "team_filter": team_filter or "All Teams"
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return Response({
+            "error": str(e),
+            "matrix": [],
+            "contribution_types": [],
+            "team_filter": request.GET.get("team") or "All Teams"
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -259,5 +259,49 @@ export const api = {
         const res = await fetch(`${API_BASE_URL}/issues/raw`);
         if (!res.ok) throw new Error('Failed to fetch raw issues');
         return await res.json();
+    },
+
+    /**
+     * Fetch contribution matrix data
+     */
+    async getContributionMatrix(team = 'All Teams') {
+        try {
+            const query = team && team !== 'All Teams' ? `?team=${encodeURIComponent(team)}` : '';
+            const url = `${API_BASE_URL}/contributions/matrix${query}`;
+            console.log('Fetching contribution matrix from:', url);
+            
+            // Add timeout to prevent infinite loading
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+            
+            const response = await fetch(url, {
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ error: `HTTP ${response.status}` }));
+                console.error('Contribution matrix API error:', errorData);
+                throw new Error(errorData.error || `Failed to fetch contribution matrix: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Contribution matrix data received:', data);
+            
+            // Validate response structure
+            if (!data || typeof data !== 'object') {
+                throw new Error('Invalid response format from server');
+            }
+            
+            return data;
+        } catch (error) {
+            if (error.name === 'AbortError') {
+                console.error("API Error (getContributionMatrix): Request timeout");
+                throw new Error('Request timed out. The server may be slow or unresponsive.');
+            }
+            console.error("API Error (getContributionMatrix):", error);
+            throw error;
+        }
     }
 };

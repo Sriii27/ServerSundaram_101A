@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayoutDashboard, Users, Activity, Settings, Search, Bell, Menu, X, LogOut, Scale } from 'lucide-react';
+import { LayoutDashboard, Users, Activity, Settings, Search, Bell, Menu, X, LogOut, Scale, Grid3x3, TrendingUp } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 export function DashboardLayout({ children }) {
@@ -10,6 +10,8 @@ export function DashboardLayout({ children }) {
         { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
         { icon: Users, label: 'Contributors', path: '/contributors' },
         { icon: Activity, label: 'Activity', path: '/activity' },
+        { icon: Grid3x3, label: 'Contribution Matrix', path: '/contribution-matrix' },
+        { icon: TrendingUp, label: 'Disparity Analysis', path: '/disparity' },
         { icon: Scale, label: 'Metrics', path: '/metrics' },
     ];
 

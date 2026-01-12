@@ -9,7 +9,8 @@ from .views import (
     get_raw_employees,
     get_raw_contributions,
     get_raw_activities,
-    get_raw_issues
+    get_raw_issues,
+    contribution_matrix
 )
     
 
@@ -34,4 +35,7 @@ urlpatterns = [
     path("v1/contributions/raw", get_raw_contributions),
     path("v1/activities/raw", get_raw_activities),
     path("v1/issues/raw", get_raw_issues),
+    
+    # Contribution Matrix
+    path("v1/contributions/matrix", contribution_matrix),
 ]
